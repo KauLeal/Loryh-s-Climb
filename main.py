@@ -6,11 +6,14 @@ SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 600
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("L'oryhs Climb")
+pygame.display.set_caption("Loryh's Climb")
 
 #set frame rate
 clock = pygame.time.Clock()
 FPS = 60
+
+#game variables
+gravity = 1
 
 #colors
 WHITE = (255, 255, 255)
@@ -27,6 +30,7 @@ class Player:
         self.height = 40 # height of rect
         self.rect = pygame.Rect(0, 0, self.width, self.height) #create a rect around of the player     
         self.rect.center = (x, y) # posicion the rect
+        self.vel_y = 0
         self.flip = False #start fliped to right 
 
     def draw(self):
@@ -38,7 +42,7 @@ class Player:
         dx = 0
         dy = 0
 
-        #process keyboar
+        #process keypresses
         key = pygame.key.get_pressed()
         
         if key[pygame.K_a]: #move to left
@@ -48,12 +52,21 @@ class Player:
             dx = 10
             self.flip = False
 
+        #gravity
+        self.vel_y += gravity
+        dy += self.vel_y
+
         #ensure player doesn't go off the edge of the screen
         if self.rect.left + dx < 0:
             dx = 0 -self.rect.left
 
         if self.rect.right + dx > SCREEN_WIDTH:
             dx =  SCREEN_WIDTH - self.rect.right
+
+        #check collision with ground
+        if self.rect.bottom + dy > SCREEN_HEIGHT:
+            dy = 0
+            self.vel_y = -20
 
         #update rectangule position
         self.rect.x += dx
