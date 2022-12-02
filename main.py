@@ -16,7 +16,7 @@ FPS = 60
 #game variables
 scroll_thresh = 200
 gravity = 1
-max_platforms = 15
+max_platforms = 10
 scroll = 0
 bg_scroll = 0
 
@@ -119,8 +119,13 @@ class Platform(pygame.sprite.Sprite):
         self.rect.y = y
     
     def update(self, scroll):
+
         #update platform's vertical position
         self.rect.y += scroll
+
+        #check if platform's has gone off the screen
+        if self.rect.top > SCREEN_HEIGHT:
+            self.kill()
 
 #player instance
 lory = Player(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 150) 
@@ -128,14 +133,9 @@ lory = Player(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 150)
 #create sprite groups
 platform_group = pygame.sprite.Group()
 
-#create temporary platforms
-for p in range (max_platforms):
-    p_w = random.randint(40, 60)
-    p_x = random.randint(0, SCREEN_WIDTH - p_w)
-    p_y = p * random.randint(50, 80)
-    platform = Platform(p_x, p_y, p_w)
-    platform_group.add(platform)
-
+#create starting platforms
+platform = Platform(SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT - 50, 100)
+platform_group.add(platform)
 
 #game loop
 run = True
@@ -153,9 +153,14 @@ while run:
         bg_scroll = 0
     draw_bg(bg_scroll)
 
-    #draw temporary scroll threshold
-    pygame.draw.line(screen, WHITE, (0, scroll_thresh), (SCREEN_WIDTH, scroll_thresh))
-    
+    #generate platforms
+    if len(platform_group) < max_platforms:
+        p_w = random.randint(40, 60)
+        p_x = random.randint(0, SCREEN_WIDTH - p_w)
+        p_y = platform.rect.y - random.randint(80, 120)
+        platform = Platform(p_x, p_y, p_w)
+        platform_group.add(platform)
+
     #update platforms
     platform_group.update(scroll)
 
