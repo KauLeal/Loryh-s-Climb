@@ -14,16 +14,24 @@ clock = pygame.time.Clock()
 FPS = 60
 
 #game variables
+scroll_thresh = 200
 gravity = 1
-max_platforms = 10
+max_platforms = 15
+scroll = 0
+bg_scroll = 0
 
 #colors
 WHITE = (255, 255, 255)
 
 #load images
 lory_image = pygame.image.load('assets/lory.png').convert_alpha()
-bg_image = pygame.image.load('assets/bg.jpg').convert_alpha()
+bg_image = pygame.image.load('assets/sky.png').convert_alpha()
 platform_image = pygame.image.load('assets/platform.png').convert_alpha()
+
+#function for drawing the background
+def draw_bg(bg_scroll):
+    screen.blit(bg_image, (0, 0 + bg_scroll))
+    screen.blit(bg_image, (0, -600 + bg_scroll))
 
 #class player
 class Player:
@@ -42,6 +50,7 @@ class Player:
 
     def move(self):
         #reset variables
+        scroll = 0
         dx = 0
         dy = 0
 
@@ -51,7 +60,13 @@ class Player:
         if key[pygame.K_a]: #move to left
             dx = -10
             self.flip = True
+        if key[pygame.K_LEFT]: #move to left
+            dx = -10
+            self.flip = True
         if key[pygame.K_d]: #move to right
+            dx = 10
+            self.flip = False
+        if key[pygame.K_RIGHT]: #move to right
             dx = 10
             self.flip = False
 
@@ -82,9 +97,17 @@ class Player:
             dy = 0
             self.vel_y = -20
 
+        #check if the player has bounced to the top of the screen
+        if self.rect.top <= scroll_thresh:
+            #if player is jumping
+            if self.vel_y < 0:
+                scroll = -dy
+
         #update rectangule position
         self.rect.x += dx
-        self.rect.y += dy
+        self.rect.y += dy + scroll
+
+        return scroll
 
 #platform class
 class Platform(pygame.sprite.Sprite):
@@ -94,6 +117,10 @@ class Platform(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+    
+    def update(self, scroll):
+        #update platform's vertical position
+        self.rect.y += scroll
 
 #player instance
 lory = Player(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 150) 
@@ -105,7 +132,7 @@ platform_group = pygame.sprite.Group()
 for p in range (max_platforms):
     p_w = random.randint(40, 60)
     p_x = random.randint(0, SCREEN_WIDTH - p_w)
-    p_y = p * random.randint(80, 120)
+    p_y = p * random.randint(50, 80)
     platform = Platform(p_x, p_y, p_w)
     platform_group.add(platform)
 
@@ -118,11 +145,20 @@ while run:
     clock.tick(FPS)
 
     #move player
-    lory.move()
+    scroll = lory.move()
 
-    #draw bg
-    screen.blit(bg_image, (0,0))
+    #draw background
+    bg_scroll += scroll
+    if bg_scroll >= 600:
+        bg_scroll = 0
+    draw_bg(bg_scroll)
+
+    #draw temporary scroll threshold
+    pygame.draw.line(screen, WHITE, (0, scroll_thresh), (SCREEN_WIDTH, scroll_thresh))
     
+    #update platforms
+    platform_group.update(scroll)
+
     #draw sprites
     platform_group.draw(screen)
     lory.draw()
