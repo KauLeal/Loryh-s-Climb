@@ -189,8 +189,8 @@ while run:
                 pygame.draw.rect(screen, BLACK, (0, y * 100, fade_counter, 100))
                 pygame.draw.rect(screen, BLACK, (SCREEN_WIDTH - fade_counter, (y + 1) * 100, SCREEN_WIDTH, 100))
         draw_test('GAME OVER!', font_big, WHITE, 130, 200)
-        draw_test('SCORE: ' + str(score), font_big, WHITE, 130, 250)
-        draw_test('PRESS SPACE TO PLAY AGAIN', font_big, WHITE, 40, 300)
+        draw_test('PONTOS: ' + str(score), font_big, WHITE, 135, 250)
+        draw_test('APERTE ESPAÇO PARA RECOMEÇAR', font_small, WHITE, 30, 300)
         key = pygame.key.get_pressed()
         if key[pygame.K_SPACE]:
             #reset variables
