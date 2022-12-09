@@ -1,5 +1,6 @@
 import pygame
 import random
+import os
 
 pygame.init()
 
@@ -23,9 +24,16 @@ game_over = False
 score = 0
 fade_counter = 0
 
+if os.path.exists('score.txt'):
+    with open('score.txt', 'r') as file:
+        high_score = int(file.read())
+else:
+    high_score = 0
+
 #colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+PANEL = (153, 217, 234)
 
 #define font
 font_small = pygame.font.SysFont('Lucida Sans', 20)
@@ -40,6 +48,12 @@ platform_image = pygame.image.load('assets/platform.png').convert_alpha()
 def draw_test(text, font, text_col, x, y):
     img = font.render(text, True, text_col)
     screen.blit(img, (x, y))
+
+#function for drawing info panel
+def draw_panel():
+    pygame.draw.rect(screen, PANEL, (0, 0, SCREEN_WIDTH, 30))
+    pygame.draw.line(screen, WHITE, (0, 30), (SCREEN_WIDTH, 30), 2)
+    draw_test('PONTOS: ' + str(score), font_small, WHITE, 0, 0)
 
 
 #function for drawing the background
@@ -174,41 +188,62 @@ while run:
         #update platforms
         platform_group.update(scroll)
 
+        #update score
+        if scroll > 0:
+            score += scroll
+
+        #draw line at previous high score
+        pygame.draw.line(screen, WHITE, (0, score - high_score + scroll_thresh), (SCREEN_WIDTH, score - high_score + scroll_thresh), 3)
+        draw_test('HIGH SCORE', font_small, WHITE, SCREEN_WIDTH - 130, score - high_score + scroll_thresh)
+
         #draw sprites
         platform_group.draw(screen)
         lory.draw()
 
+        #draw panel
+        draw_panel()
+
         #check game over
         if lory.rect.top > SCREEN_HEIGHT:
             game_over = True
-        
     else:
         if fade_counter < SCREEN_WIDTH:
             fade_counter += 5
             for y in range(0, 6, 2):
                 pygame.draw.rect(screen, BLACK, (0, y * 100, fade_counter, 100))
                 pygame.draw.rect(screen, BLACK, (SCREEN_WIDTH - fade_counter, (y + 1) * 100, SCREEN_WIDTH, 100))
-        draw_test('GAME OVER!', font_big, WHITE, 130, 200)
-        draw_test('PONTOS: ' + str(score), font_big, WHITE, 135, 250)
-        draw_test('APERTE ESPAÇO PARA RECOMEÇAR', font_small, WHITE, 30, 300)
-        key = pygame.key.get_pressed()
-        if key[pygame.K_SPACE]:
-            #reset variables
-            game_over = False
-            score = 0
-            scroll = 0
-            fade_counter = 0
-            #reposition loryh
-            lory.rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT - 150)
-            #reset platforms
-            platform_group.empty()
-            #create starting platforms
-            platform = Platform(SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT - 50, 100)
-            platform_group.add(platform)
+        else:  
+            draw_test('GAME OVER!', font_big, WHITE, 130, 200)
+            draw_test('PONTOS: ' + str(score), font_big, WHITE, 120, 250)
+            draw_test('APERTE ESPAÇO PARA RECOMEÇAR', font_small, WHITE, 30, 300)
+            #update high score
+            if score > high_score:
+                high_score = score
+                with open('score.txt', 'w') as file:
+                    file.write(str(high_score))
+            key = pygame.key.get_pressed()
+            if key[pygame.K_SPACE]:
+                #reset variables
+                game_over = False
+                score = 0
+                scroll = 0
+                fade_counter = 0
+                #reposition loryh
+                lory.rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT - 150)
+                #reset platforms
+                platform_group.empty()
+                #create starting platforms
+                platform = Platform(SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT - 50, 100)
+                platform_group.add(platform)
 
     #event handler
     for e in pygame.event.get():
         if e.type == pygame.QUIT:
+            #update high score
+            if score > high_score:
+                high_score = score
+                with open('score.txt', 'w') as file:
+                    file.write(str(high_score))
             run = False
 
 
