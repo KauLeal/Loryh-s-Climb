@@ -1,5 +1,6 @@
 import pygame
 import random
+import os
 
 pygame.init()
 
@@ -16,17 +17,44 @@ FPS = 60
 #game variables
 scroll_thresh = 200
 gravity = 1
-max_platforms = 15
+max_platforms = 10
 scroll = 0
 bg_scroll = 0
+game_over = False
+score = 0
+fade_counter = 0
+
+if os.path.exists('score.txt'):
+    with open('score.txt', 'r') as file:
+        high_score = int(file.read())
+else:
+    high_score = 0
 
 #colors
 WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+PANEL = (153, 217, 234)
+
+#define font
+font_small = pygame.font.SysFont('Lucida Sans', 20)
+font_big = pygame.font.SysFont('Lucida Sans', 24)
 
 #load images
 lory_image = pygame.image.load('assets/lory.png').convert_alpha()
 bg_image = pygame.image.load('assets/sky.png').convert_alpha()
 platform_image = pygame.image.load('assets/platform.png').convert_alpha()
+
+#function for outputting text onto the screen
+def draw_test(text, font, text_col, x, y):
+    img = font.render(text, True, text_col)
+    screen.blit(img, (x, y))
+
+#function for drawing info panel
+def draw_panel():
+    pygame.draw.rect(screen, PANEL, (0, 0, SCREEN_WIDTH, 30))
+    pygame.draw.line(screen, WHITE, (0, 30), (SCREEN_WIDTH, 30), 2)
+    draw_test('PONTOS: ' + str(score), font_small, WHITE, 0, 0)
+
 
 #function for drawing the background
 def draw_bg(bg_scroll):
@@ -92,11 +120,6 @@ class Player:
                         dy = 0
                         self.vel_y = -20
 
-        #check collision with ground
-        if self.rect.bottom + dy > SCREEN_HEIGHT:
-            dy = 0
-            self.vel_y = -20
-
         #check if the player has bounced to the top of the screen
         if self.rect.top <= scroll_thresh:
             #if player is jumping
@@ -111,31 +134,47 @@ class Player:
 
 #platform class
 class Platform(pygame.sprite.Sprite):
-    def __init__(self, x, y, width):
+    def __init__(self, x, y, width, moving):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.transform.scale(platform_image, (width, 10))
+        self.moving = moving
+        self.move_counter = random.randint(0, 50)
+        self.direction = random.choice([-1, 1])
+        self.speed = random.randint(1, 2)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
     
     def update(self, scroll):
+        #moving platform side to side if it is a moving platform
+        if self.moving == True:
+            self.move_counter += 1
+            if score >= 3000:
+                self.rect.x += self.direction * self.speed
+            else:
+                self.rect.x += self.direction
+
+        # change platform direction if it has moved fully or hit a wall
+        if self.move_counter >= 100 or self.rect.left < 0 or self.rect.right > SCREEN_WIDTH:
+            self.direction *= -1
+            self.move_counter = 0
+
         #update platform's vertical position
         self.rect.y += scroll
 
+        #check if platform's has gone off the screen
+        if self.rect.top > SCREEN_HEIGHT:
+            self.kill()
+
 #player instance
-lory = Player(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 150) 
+lory = Player(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 150)
 
 #create sprite groups
 platform_group = pygame.sprite.Group()
 
-#create temporary platforms
-for p in range (max_platforms):
-    p_w = random.randint(40, 60)
-    p_x = random.randint(0, SCREEN_WIDTH - p_w)
-    p_y = p * random.randint(50, 80)
-    platform = Platform(p_x, p_y, p_w)
-    platform_group.add(platform)
-
+#create starting platforms
+platform = Platform(SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT - 50, 100, False)
+platform_group.add(platform)
 
 #game loop
 run = True
@@ -144,27 +183,88 @@ while run:
     #slow down 
     clock.tick(FPS)
 
-    #move player
-    scroll = lory.move()
+    if game_over == False:
+        #move player
+        scroll = lory.move()
 
-    #draw background
-    bg_scroll += scroll
-    if bg_scroll >= 600:
-        bg_scroll = 0
-    draw_bg(bg_scroll)
+        #draw background
+        bg_scroll += scroll
+        if bg_scroll >= 600:
+            bg_scroll = 0
+        draw_bg(bg_scroll)
 
-    #draw temporary scroll threshold
-    pygame.draw.line(screen, WHITE, (0, scroll_thresh), (SCREEN_WIDTH, scroll_thresh))
-    
-    #update platforms
-    platform_group.update(scroll)
+        #generate platforms
+        if len(platform_group) < max_platforms:
+            p_w = random.randint(40, 60)
+            p_x = random.randint(0, SCREEN_WIDTH - p_w)
+            p_y = platform.rect.y - random.randint(80, 120)
+            p_type = random.randint(1, 2)
+            if p_type == 1 and score > 1500:
+                p_moving = True
+            else:
+                p_moving = False
+            platform = Platform(p_x, p_y, p_w, p_moving)
+            platform_group.add(platform)
 
-    #draw sprites
-    platform_group.draw(screen)
-    lory.draw()
+        #update platforms
+        platform_group.update(scroll)
 
+        #update score
+        if scroll > 0:
+            score += scroll
+
+        #draw line at previous high score
+        pygame.draw.line(screen, WHITE, (0, score - high_score + scroll_thresh), (SCREEN_WIDTH, score - high_score + scroll_thresh), 3)
+        draw_test('HIGH SCORE', font_small, WHITE, SCREEN_WIDTH - 130, score - high_score + scroll_thresh)
+
+        #draw sprites
+        platform_group.draw(screen)
+        lory.draw()
+
+        #draw panel
+        draw_panel()
+
+        #check game over
+        if lory.rect.top > SCREEN_HEIGHT:
+            game_over = True
+    else:
+        if fade_counter < SCREEN_WIDTH:
+            fade_counter += 5
+            for y in range(0, 6, 2):
+                pygame.draw.rect(screen, BLACK, (0, y * 100, fade_counter, 100))
+                pygame.draw.rect(screen, BLACK, (SCREEN_WIDTH - fade_counter, (y + 1) * 100, SCREEN_WIDTH, 100))
+        else:  
+            draw_test('GAME OVER!', font_big, WHITE, 130, 200)
+            draw_test('PONTOS: ' + str(score), font_big, WHITE, 120, 250)
+            draw_test('APERTE ESPAÇO PARA RECOMEÇAR', font_small, WHITE, 30, 300)
+            #update high score
+            if score > high_score:
+                high_score = score
+                with open('score.txt', 'w') as file:
+                    file.write(str(high_score))
+            key = pygame.key.get_pressed()
+            if key[pygame.K_SPACE]:
+                #reset variables
+                game_over = False
+                score = 0
+                scroll = 0
+                fade_counter = 0
+                #reposition loryh
+                lory.rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT - 150)
+                #reset platforms
+                platform_group.empty()
+                #create starting platforms
+                platform = Platform(SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT - 50, 100, False)
+                platform_group.add(platform)
+
+    #event handler
     for e in pygame.event.get():
         if e.type == pygame.QUIT:
+            #update high score
+            if score > high_score:
+                high_score = score
+                with open('score.txt', 'w') as file:
+                    file.write(str(high_score))
             run = False
 
 

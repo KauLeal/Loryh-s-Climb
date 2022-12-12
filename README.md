@@ -25,7 +25,7 @@ Agradecemos às seguintes pessoas que contribuíram para este projeto:
       <a href="https://github.com/lycie03">
         <img src="https://github.com/lycie03.png" width="100px;" alt="Foto da Alícia Pereira no GitHub"/><br>
         <sub>
-          <b>Alícia Pereira</b>
+          <b>Alícia Lima</b>
         </sub>
       </a>
     </td>
