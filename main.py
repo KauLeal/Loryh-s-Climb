@@ -1,6 +1,7 @@
 import pygame
 import random
 import os
+from spritesheet import SpriteSheet
 
 pygame.init()
 
@@ -43,6 +44,9 @@ font_big = pygame.font.SysFont('Lucida Sans', 24)
 lory_image = pygame.image.load('assets/lory.png').convert_alpha()
 bg_image = pygame.image.load('assets/sky.png').convert_alpha()
 platform_image = pygame.image.load('assets/platform.png').convert_alpha()
+#bat spritesheet
+bat_sheet_img = pygame.image.load('assets/bat-spritesheet.png').convert_alpha()
+bat_sheet = SpriteSheet(bat_sheet_img)
 
 #function for outputting text onto the screen
 def draw_test(text, font, text_col, x, y):
