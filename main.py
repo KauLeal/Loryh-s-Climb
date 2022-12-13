@@ -216,7 +216,7 @@ while run:
         platform_group.update(scroll)
 
         #generate enemies
-        if len(enemy_group) == 0:
+        if len(enemy_group) == 0 and score > 1500:
             enemy = Enemy(SCREEN_WIDTH, 100, bat_sheet, 1.5)
             enemy_group.add(enemy )
 
@@ -266,6 +266,8 @@ while run:
                 fade_counter = 0
                 #reposition loryh
                 lory.rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT - 150)
+                #reset enemies
+                enemy_group.empty()
                 #reset platforms
                 platform_group.empty()
                 #create starting platforms
