@@ -2,6 +2,7 @@ import pygame
 import random
 import os
 from spritesheet import SpriteSheet
+from enemy import Enemy
 
 pygame.init()
 
@@ -175,6 +176,7 @@ lory = Player(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 150)
 
 #create sprite groups
 platform_group = pygame.sprite.Group()
+enemy_group = pygame.sprite.Group()
 
 #create starting platforms
 platform = Platform(SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT - 50, 100, False)
@@ -213,6 +215,14 @@ while run:
         #update platforms
         platform_group.update(scroll)
 
+        #generate enemies
+        if len(enemy_group) == 0:
+            enemy = Enemy(SCREEN_WIDTH, 100, bat_sheet, 1.5)
+            enemy_group.add(enemy )
+
+        #update enemies
+        enemy_group.update(scroll, SCREEN_WIDTH)
+
         #update score
         if scroll > 0:
             score += scroll
@@ -223,6 +233,7 @@ while run:
 
         #draw sprites
         platform_group.draw(screen)
+        enemy_group.draw(screen)
         lory.draw()
 
         #draw panel
