@@ -43,7 +43,7 @@ font_big = pygame.font.SysFont('Lucida Sans', 24)
 
 #load images
 lory_image = pygame.image.load('assets/lory.png').convert_alpha()
-bg_image = pygame.image.load('assets/sky.png').convert_alpha()
+bg_image = pygame.image.load('assets/bg.jpg').convert_alpha()
 platform_image = pygame.image.load('assets/platform.png').convert_alpha()
 #bat spritesheet
 bat_sheet_img = pygame.image.load('assets/bat-spritesheet.png').convert_alpha()
@@ -79,7 +79,7 @@ class Player:
 
     def draw(self):
         screen.blit(pygame.transform.flip(self.image, self.flip, False), (self.rect.x - 10, self.rect.y - 5)) #move some pixels to adjust the rect
-        pygame.draw.rect(screen, WHITE, self.rect, 2)
+        # pygame.draw.rect(screen, WHITE, self.rect, 2)
 
     def move(self):
         #reset variables
