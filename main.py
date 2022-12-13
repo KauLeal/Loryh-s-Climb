@@ -56,8 +56,8 @@ def draw_test(text, font, text_col, x, y):
 
 #function for drawing info panel
 def draw_panel():
-    pygame.draw.rect(screen, PANEL, (0, 0, SCREEN_WIDTH, 30))
-    pygame.draw.line(screen, WHITE, (0, 30), (SCREEN_WIDTH, 30), 2)
+    # pygame.draw.rect(screen, PANEL, (0, 0, SCREEN_WIDTH, 30))
+    # pygame.draw.line(screen, WHITE, (0, 30), (SCREEN_WIDTH, 30), 2)
     draw_test('PONTOS: ' + str(score), font_small, WHITE, 0, 0)
 
 
