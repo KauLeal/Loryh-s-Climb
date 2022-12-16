@@ -43,8 +43,8 @@ font_big = pygame.font.SysFont('Lucida Sans', 24)
 
 #load images
 lory_image = pygame.image.load('assets/lory.png').convert_alpha()
-bg_image = pygame.image.load('assets/bg.jpg').convert_alpha()
-platform_image = pygame.image.load('assets/platform.png').convert_alpha()
+bg_image = pygame.image.load('assets/BG2.png').convert_alpha()
+platform_image = pygame.image.load('assets/platform1.png').convert_alpha()
 #bat spritesheet
 bat_sheet_img = pygame.image.load('assets/bat-spritesheet.png').convert_alpha()
 bat_sheet = SpriteSheet(bat_sheet_img)
@@ -63,13 +63,13 @@ def draw_panel():
 
 #function for drawing the background
 def draw_bg(bg_scroll):
-    screen.blit(bg_image, (0, 0 + bg_scroll))
+    screen.blit(bg_image, (0, 0+ bg_scroll))
     screen.blit(bg_image, (0, -600 + bg_scroll))
 
 #class player
 class Player:
     def __init__(self, x, y): # x and y are init cordenates of player
-        self.image = pygame.transform.scale(lory_image, (45, 45)) #add image in the player and resize
+        self.image = pygame.transform.scale(lory_image, (35, 45)) #add image in the player and resize
         self.width = 25 # width of rect
         self.height = 40 # height of rect
         self.rect = pygame.Rect(0, 0, self.width, self.height) #create a rect around of the player     
@@ -141,7 +141,7 @@ class Player:
 class Platform(pygame.sprite.Sprite):
     def __init__(self, x, y, width, moving):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.transform.scale(platform_image, (width, 10))
+        self.image = pygame.transform.scale(platform_image, (width, 40))
         self.moving = moving
         self.move_counter = random.randint(0, 50)
         self.direction = random.choice([-1, 1])
@@ -276,6 +276,9 @@ while run:
 
     #event handler
     for e in pygame.event.get():
+        if e.type == pygame.KEYDOWN:
+            if e.key == pygame.K_ESCAPE:
+                print("Pause")
         if e.type == pygame.QUIT:
             #update high score
             if score > high_score:
