@@ -102,6 +102,8 @@ class Player:
         if key[pygame.K_RIGHT]: #move to right
             dx = 10
             self.flip = False
+        if key[pygame.K_SPACE]:
+            self.vel_y = 5
 
         #gravity
         self.vel_y += gravity
@@ -217,7 +219,7 @@ while run:
 
         #generate enemies
         if len(enemy_group) == 0 and score > 1500:
-            enemy = Enemy(SCREEN_WIDTH, 100, bat_sheet, 1.5)
+            enemy = Enemy(SCREEN_WIDTH, 30, bat_sheet, 1.5)
             enemy_group.add(enemy )
 
         #update enemies
