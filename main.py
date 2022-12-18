@@ -99,6 +99,7 @@ class Player:
 
         #process keypresses
         key = pygame.key.get_pressed()
+
         if jumping == True:
             if key[pygame.K_a]: #move to left
                 dx = -10
@@ -114,11 +115,12 @@ class Player:
                 self.flip = False
             if key[pygame.K_SPACE]:
                 self.vel_y = 10
-
-        #gravity
-        if jumping == True:
+        
+            #gravity    
             self.vel_y += gravity
             dy += self.vel_y
+        
+
 
         #ensure player doesn't go off the edge of the screen
         if self.rect.left + dx < 0:
@@ -254,11 +256,15 @@ while run:
         lory.draw()
 
         if jumping == False:
+            draw_test('PRESSIONE ESPAÇO', font_big, WHITE, 80, 360)
+            draw_test('PARA COMEÇAR O JOGO', font_big, WHITE, 60, 390)
             screen.blit(title_image, (75, 20))
+        else:
+             #draw panel
+            draw_panel()
 
 
-        #draw panel
-        draw_panel()
+       
 
         #check game over
         if lory.rect.top > SCREEN_HEIGHT:
