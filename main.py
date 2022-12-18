@@ -37,7 +37,7 @@ else:
 #colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-PANEL = (153, 217, 234)
+PANEL = (220, 220, 220)
 
 #define font
 font_small = pygame.font.SysFont('Lucida Sans', 20)
@@ -62,7 +62,7 @@ def draw_test(text, font, text_col, x, y):
 def draw_panel():
     # pygame.draw.rect(screen, PANEL, (0, 0, SCREEN_WIDTH, 30))
     # pygame.draw.line(screen, WHITE, (0, 30), (SCREEN_WIDTH, 30), 2)
-    draw_test('PONTOS: ' + str(score), font_small, WHITE, 0, 0)
+    draw_test('PONTOS: ' + str(score), font_small, WHITE, 100, 0)
 
 
 
@@ -256,8 +256,8 @@ while run:
         lory.draw()
 
         if jumping == False:
-            draw_test('PRESSIONE ESPAÇO', font_big, WHITE, 80, 360)
-            draw_test('PARA COMEÇAR O JOGO', font_big, WHITE, 60, 390)
+            draw_test('PRESSIONE ESPAÇO', font_small, WHITE, 100, 360)
+            draw_test('PARA COMEÇAR O JOGO', font_small, WHITE, 80, 390)
             screen.blit(title_image, (75, 20))
         else:
              #draw panel
@@ -277,8 +277,9 @@ while run:
                 pygame.draw.rect(screen, BLACK, (SCREEN_WIDTH - fade_counter, (y + 1) * 100, SCREEN_WIDTH, 100))
         else:  
             draw_test('GAME OVER!', font_big, WHITE, 130, 200)
-            draw_test('PONTOS: ' + str(score), font_big, WHITE, 120, 250)
-            draw_test('APERTE ESPAÇO PARA RECOMEÇAR', font_small, WHITE, 30, 300)
+            draw_test('PONTOS: ' + str(score), font_big, WHITE, 140, 250)
+            draw_test('APERTE ESPAÇO PARA', font_small, WHITE, 90, 500)
+            draw_test('VOLTAR AO MENU', font_small, WHITE, 110, 530)
             #update high score
             if score > high_score:
                 high_score = score
