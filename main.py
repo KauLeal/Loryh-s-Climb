@@ -77,7 +77,7 @@ def draw_bg(bg_scroll):
     screen.blit(bg_image2, (0, -600 + bg_scroll))
 
 #class player
-class Player:
+class Player():
     def __init__(self, x, y): # x and y are init cordenates of player
         self.image = pygame.transform.scale(lory_image, (35, 45)) #add image in the player and resize
         self.width = 25 # width of rect
@@ -149,6 +149,9 @@ class Player:
         #update rectangule position
         self.rect.x += dx
         self.rect.y += dy + scroll
+
+        #update mask
+        self.mask = pygame.mask.from_surface(self.image)
 
         return scroll
 
@@ -263,12 +266,13 @@ while run:
              #draw panel
             draw_panel()
 
-
-       
-
         #check game over
         if lory.rect.top > SCREEN_HEIGHT:
             game_over = True
+        #check for collision with enemies
+        if pygame.sprite.spritecollide(lory, enemy_group, False):
+            if pygame.sprite.spritecollide(lory, enemy_group, False, pygame.sprite.collide_mask):
+                game_over = True
     else:
         if fade_counter < SCREEN_WIDTH:
             fade_counter += 5
