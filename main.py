@@ -37,6 +37,11 @@ else:
 #colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+MARROON = ((115,0,0))
+BROWN = (124, 80, 66)
+BROWN2 = (169, 110, 93)
+BLUE = (115, 221, 228)
+BLUE2 = (81, 183, 226)
 PANEL = (220, 220, 220)
 
 #define font
@@ -277,11 +282,11 @@ while run:
         if fade_counter < SCREEN_WIDTH:
             fade_counter += 5
             for y in range(0, 6, 2):
-                pygame.draw.rect(screen, BLACK, (0, y * 100, fade_counter, 100))
-                pygame.draw.rect(screen, BLACK, (SCREEN_WIDTH - fade_counter, (y + 1) * 100, SCREEN_WIDTH, 100))
+                pygame.draw.rect(screen, BROWN, (0, y * 100, fade_counter, 100))
+                pygame.draw.rect(screen, BROWN, (SCREEN_WIDTH - fade_counter, (y + 1) * 100, SCREEN_WIDTH, 100))
         else:  
             draw_test('GAME OVER!', font_big, WHITE, 130, 200)
-            draw_test('PONTOS: ' + str(score), font_big, WHITE, 140, 250)
+            draw_test('PONTOS: ' + str(score), font_big, WHITE, 120, 250)
             draw_test('APERTE ESPAÇO PARA', font_small, WHITE, 90, 500)
             draw_test('VOLTAR AO MENU', font_small, WHITE, 110, 530)
             #update high score
