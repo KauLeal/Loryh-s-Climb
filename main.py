@@ -22,9 +22,11 @@ gravity = 1
 max_platforms = 10
 scroll = 0
 bg_scroll = 0
+bg_scroll_title = 0
 game_over = False
 score = 0
 fade_counter = 0
+jumping = False
 
 if os.path.exists('score.txt'):
     with open('score.txt', 'r') as file:
@@ -43,8 +45,10 @@ font_big = pygame.font.SysFont('Lucida Sans', 24)
 
 #load images
 lory_image = pygame.image.load('assets/lory.png').convert_alpha()
-bg_image = pygame.image.load('assets/BG2.png').convert_alpha()
+bg_image2 = pygame.image.load('assets/BG2.png').convert_alpha()
+bg_image1 = pygame.image.load('assets/BG1.png').convert_alpha()
 platform_image = pygame.image.load('assets/platform1.png').convert_alpha()
+title_image = pygame.image.load('assets/Titulo.png')
 #bat spritesheet
 bat_sheet_img = pygame.image.load('assets/bat-spritesheet.png').convert_alpha()
 bat_sheet = SpriteSheet(bat_sheet_img)
@@ -61,10 +65,16 @@ def draw_panel():
     draw_test('PONTOS: ' + str(score), font_small, WHITE, 0, 0)
 
 
+
+
+
+def draw_title_bg(bg_scroll_title):
+    screen.blit(bg_image1, (0, 195 + bg_scroll_title))
+
 #function for drawing the background
 def draw_bg(bg_scroll):
-    screen.blit(bg_image, (0, 0+ bg_scroll))
-    screen.blit(bg_image, (0, -600 + bg_scroll))
+    screen.blit(bg_image2, (0, 0 + bg_scroll))
+    screen.blit(bg_image2, (0, -600 + bg_scroll))
 
 #class player
 class Player:
@@ -89,25 +99,26 @@ class Player:
 
         #process keypresses
         key = pygame.key.get_pressed()
-        
-        if key[pygame.K_a]: #move to left
-            dx = -10
-            self.flip = True
-        if key[pygame.K_LEFT]: #move to left
-            dx = -10
-            self.flip = True
-        if key[pygame.K_d]: #move to right
-            dx = 10
-            self.flip = False
-        if key[pygame.K_RIGHT]: #move to right
-            dx = 10
-            self.flip = False
-        if key[pygame.K_SPACE]:
-            self.vel_y = 5
+        if jumping == True:
+            if key[pygame.K_a]: #move to left
+                dx = -10
+                self.flip = True
+            if key[pygame.K_LEFT]: #move to left
+                dx = -10
+                self.flip = True
+            if key[pygame.K_d]: #move to right
+                dx = 10
+                self.flip = False
+            if key[pygame.K_RIGHT]: #move to right
+                dx = 10
+                self.flip = False
+            if key[pygame.K_SPACE]:
+                self.vel_y = 10
 
         #gravity
-        self.vel_y += gravity
-        dy += self.vel_y
+        if jumping == True:
+            self.vel_y += gravity
+            dy += self.vel_y
 
         #ensure player doesn't go off the edge of the screen
         if self.rect.left + dx < 0:
@@ -174,7 +185,7 @@ class Platform(pygame.sprite.Sprite):
             self.kill()
 
 #player instance
-lory = Player(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 150)
+lory = Player(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 75)
 
 #create sprite groups
 platform_group = pygame.sprite.Group()
@@ -197,9 +208,12 @@ while run:
 
         #draw background
         bg_scroll += scroll
+        bg_scroll_title += scroll
         if bg_scroll >= 600:
             bg_scroll = 0
         draw_bg(bg_scroll)
+        draw_title_bg(bg_scroll_title)
+
 
         #generate platforms
         if len(platform_group) < max_platforms:
@@ -216,6 +230,7 @@ while run:
 
         #update platforms
         platform_group.update(scroll)
+
 
         #generate enemies
         if len(enemy_group) == 0 and score > 1500:
@@ -237,6 +252,10 @@ while run:
         platform_group.draw(screen)
         enemy_group.draw(screen)
         lory.draw()
+
+        if jumping == False:
+            screen.blit(title_image, (75, 20))
+
 
         #draw panel
         draw_panel()
@@ -266,8 +285,10 @@ while run:
                 score = 0
                 scroll = 0
                 fade_counter = 0
+                jumping = False
+                bg_scroll_title = 0
                 #reposition loryh
-                lory.rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT - 150)
+                lory.rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT - 75)
                 #reset enemies
                 enemy_group.empty()
                 #reset platforms
@@ -276,11 +297,12 @@ while run:
                 platform = Platform(SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT - 50, 100, False)
                 platform_group.add(platform)
 
+
     #event handler
     for e in pygame.event.get():
         if e.type == pygame.KEYDOWN:
-            if e.key == pygame.K_ESCAPE:
-                print("Pause")
+            if e.key == pygame.K_SPACE and jumping == False:
+                jumping = True
         if e.type == pygame.QUIT:
             #update high score
             if score > high_score:
