@@ -1,9 +1,11 @@
 import pygame
 import random
 import os
+from pygame import mixer
 from spritesheet import SpriteSheet
 from enemy import Enemy
 
+mixer.init()
 pygame.init()
 
 tela_largura = 400
@@ -16,13 +18,12 @@ pygame.display.set_caption("Loryh's Climb")
 relogio = pygame.time.Clock()
 FPS = 60
 
-# etapas 
-# 1 - adicionar 'SDTK1' com loop no menu 
-# 2 - mudar a musica 'SDTK1' para 'SDTK2' com loop quando apertar ESPAÇO
-# 3 - mudar a musica 'SDTK2' para 'game-over' quando o Jogador colodir com o monstro
-# 4 - quando apertar ESPAÇO para voltar ao menu iniciar novamente  'STDK1
-
-# carregar musicas a sons
+#carregar música e sons
+musica_menu = pygame.mixer.Sound('som/SDTK1.mp3')
+musica_menu.set_volume(0.4)
+musica_jogo = pygame.mixer.Sound('som/SDTK2.mp3')
+musica_jogo.set_volume(0.4)
+som_pulo = pygame.mixer.Sound('som/pulo.mp3')
 
 #game variables
 limite_rolagem = 200
@@ -154,6 +155,7 @@ class Jogador():
                         self.rect.bottom = plataforma.rect.top
                         dy = 0
                         self.vel_y = -20
+                        som_pulo.play()
 
         #check if the Jogador has bounced to the top of the tela
         if self.rect.top <= limite_rolagem:
@@ -216,8 +218,9 @@ plataforma = Plataforma(tela_largura // 2 - 50, tela_altura - 50, 100, False)
 grupo_plataforma.add(plataforma)
 
 #game loop
-iniciar_jogo = True
-while iniciar_jogo: 
+run = True
+musica_menu.play(-1)
+while run: 
 
     #slow down 
     relogio.tick(FPS)
@@ -329,6 +332,8 @@ while iniciar_jogo:
         if e.type == pygame.KEYDOWN:
             if e.key == pygame.K_SPACE and pulo == False:
                 pulo = True
+                musica_menu.stop()
+                musica_jogo.play(-1)
         if e.type == pygame.QUIT:
             #update high score
             if pontos > high_score:
