@@ -16,6 +16,14 @@ pygame.display.set_caption("Loryh's Climb")
 clock = pygame.time.Clock()
 FPS = 60
 
+# etapas 
+# 1 - adicionar 'SDTK1' com loop no menu 
+# 2 - mudar a musica 'SDTK1' para 'SDTK2' com loop quando apertar ESPAÇO
+# 3 - mudar a musica 'SDTK2' para 'game-over' quando o player colodir com o monstro
+# 4 - quando apertar ESPAÇO para voltar ao menu iniciar novamente  'STDK1
+
+# carregar musicas a sons
+
 #game variables
 scroll_thresh = 200
 gravity = 1
