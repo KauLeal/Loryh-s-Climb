@@ -50,7 +50,7 @@ AZUL = (81, 183, 226)
 #define font
 fonte_pequena = pygame.font.SysFont('Lucida Sans', 20)
 font_big = pygame.font.SysFont('Lucida Sans', 24)
-
+ 
 #load images
 imagem_lory = pygame.image.load('assets/lory.png').convert_alpha()
 imagem_montanha_subir = pygame.image.load('assets/BG2.png').convert_alpha()
