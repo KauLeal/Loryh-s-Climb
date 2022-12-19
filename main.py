@@ -51,7 +51,7 @@ AZUL = (81, 183, 226)
 #define font
 fonte_pequena = pygame.font.SysFont('Lucida Sans', 20)
 font_big = pygame.font.SysFont('Lucida Sans', 24)
-
+ 
 #load images
 imagem_lory = pygame.image.load('assets/lory.png').convert_alpha()
 imagem_montanha_subir = pygame.image.load('assets/BG2.png').convert_alpha()
@@ -130,6 +130,7 @@ class Jogador():
                 dx = 10
                 self.flip = False
             if key[pygame.K_SPACE]:
+                som_pulo.stop()
                 self.vel_y = 10
         
             #gravidade    
@@ -218,9 +219,9 @@ plataforma = Plataforma(tela_largura // 2 - 50, tela_altura - 50, 100, False)
 grupo_plataforma.add(plataforma)
 
 #game loop
-run = True
+iniciar_jogo = True
 musica_menu.play(-1)
-while run: 
+while iniciar_jogo: 
 
     #slow down 
     relogio.tick(FPS)
@@ -328,7 +329,7 @@ while run:
                 #create starting platforms
                 plataforma = Plataforma(tela_largura // 2 - 50, tela_altura - 50, 100, False)
                 grupo_plataforma.add(plataforma)
-
+ 
 
     #event handler
     for e in pygame.event.get():
