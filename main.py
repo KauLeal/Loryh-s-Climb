@@ -218,9 +218,9 @@ plataforma = Plataforma(tela_largura // 2 - 50, tela_altura - 50, 100, False)
 grupo_plataforma.add(plataforma)
 
 #game loop
-run = True
+iniciar_jogo = True
 musica_menu.play(-1)
-while run: 
+while iniciar_jogo: 
 
     #slow down 
     relogio.tick(FPS)
