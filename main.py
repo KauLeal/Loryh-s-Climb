@@ -24,6 +24,7 @@ musica_menu.set_volume(0.4)
 musica_jogo = pygame.mixer.Sound('som/SDTK2.mp3')
 musica_jogo.set_volume(0.4)
 som_pulo = pygame.mixer.Sound('som/pulo.mp3')
+game_over = pygame.mixer.Sound('som/game-over.mp3')
 
 #game variables
 limite_rolagem = 200
@@ -289,11 +290,13 @@ while iniciar_jogo:
         if lory.rect.top > tela_altura:
             fim_jogo = True
             musica_jogo.stop()
+            game_over.play()
         #check for collision with enemies
         if pygame.sprite.spritecollide(lory, grupo_inimigos, False):
             if pygame.sprite.spritecollide(lory, grupo_inimigos, False, pygame.sprite.collide_mask):
                 fim_jogo = True
                 musica_jogo.stop()
+                game_over.play()
     else:
         if contador_fade < tela_largura:
             contador_fade += 5
