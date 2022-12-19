@@ -6,27 +6,27 @@ from enemy import Enemy
 
 pygame.init()
 
-SCREEN_WIDTH = 400
-SCREEN_HEIGHT = 600
+tela_largura = 400
+tela_altura = 600
 
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+tela = pygame.display.set_mode((tela_largura, tela_altura))
 pygame.display.set_caption("Loryh's Climb")
 
-#set frame rate
-clock = pygame.time.Clock()
+#definir frame rate
+relogio = pygame.time.Clock()
 FPS = 60
 
 #game variables
-scroll_thresh = 200
-gravity = 1
-max_platforms = 10
-scroll = 0
-bg_scroll = 0
-bg_scroll_title = 0
+limite_rolagem = 200
+gravidade = 1
+plataformas_maximo = 10
+rolagem = 0
+fundo_rolagem = 0
+fundo_rolagem_titulo = 0
 game_over = False
 score = 0
-fade_counter = 0
-jumping = False
+contador_fade = 0
+pulo = False
 
 if os.path.exists('score.txt'):
     with open('score.txt', 'r') as file:
@@ -58,34 +58,34 @@ title_image = pygame.image.load('assets/Titulo.png')
 bat_sheet_img = pygame.image.load('assets/Jonnie-Spritesheet.png').convert_alpha()
 bat_sheet = SpriteSheet(bat_sheet_img)
 
-#function for outputting text onto the screen
+#function for outputting text onto the tela
 def draw_test(text, font, text_col, x, y):
     img = font.render(text, True, text_col)
-    screen.blit(img, (x, y))
+    tela.blit(img, (x, y))
 
 def draw_panel():
     # Create a surface for the panel
-    panel_surface = pygame.Surface((SCREEN_WIDTH, 30))
+    panel_surface = pygame.Surface((tela_largura, 30))
     panel_surface.fill(BLACK)
 
     # Set the alpha value of the panel surface
     alpha = 128  # Set the alpha value to 128 (out of 255)
     panel_surface.set_alpha(alpha)
 
-    # Draw the panel surface on the screen
-    screen.blit(panel_surface, (0, 0))
+    # Draw the panel surface on the tela
+    tela.blit(panel_surface, (0, 0))
 
-    # Draw the line on the screen
-    pygame.draw.line(screen, WHITE, (0, 30), (SCREEN_WIDTH, 30), 2)
+    # Draw the line on the tela
+    pygame.draw.line(tela, WHITE, (0, 30), (tela_largura, 30), 2)
     draw_test('PONTOS: ' + str(score), font_small, WHITE, 10, 0)
 
-def draw_title_bg(bg_scroll_title):
-    screen.blit(bg_image1, (0, 195 + bg_scroll_title))
+def draw_title_bg(fundo_rolagem_titulo):
+    tela.blit(bg_image1, (0, 195 + fundo_rolagem_titulo))
 
 #function for drawing the background
-def draw_bg(bg_scroll):
-    screen.blit(bg_image2, (0, 0 + bg_scroll))
-    screen.blit(bg_image2, (0, -600 + bg_scroll))
+def draw_bg(fundo_rolagem):
+    tela.blit(bg_image2, (0, 0 + fundo_rolagem))
+    tela.blit(bg_image2, (0, -600 + fundo_rolagem))
 
 #class player
 class Player():
@@ -99,19 +99,19 @@ class Player():
         self.flip = False #start fliped to right 
 
     def draw(self):
-        screen.blit(pygame.transform.flip(self.image, self.flip, False), (self.rect.x - 10, self.rect.y - 5)) #move some pixels to adjust the rect
-        # pygame.draw.rect(screen, WHITE, self.rect, 2)
+        tela.blit(pygame.transform.flip(self.image, self.flip, False), (self.rect.x - 10, self.rect.y - 5)) #move some pixels to adjust the rect
+        # pygame.draw.rect(tela, WHITE, self.rect, 2)
 
     def move(self):
         #reset variables
-        scroll = 0
+        rolagem = 0
         dx = 0
         dy = 0
 
         #process keypresses
         key = pygame.key.get_pressed()
 
-        if jumping == True:
+        if pulo == True:
             if key[pygame.K_a]: #move to left
                 dx = -10
                 self.flip = True
@@ -127,18 +127,18 @@ class Player():
             if key[pygame.K_SPACE]:
                 self.vel_y = 10
         
-            #gravity    
-            self.vel_y += gravity
+            #gravidade    
+            self.vel_y += gravidade
             dy += self.vel_y
         
 
 
-        #ensure player doesn't go off the edge of the screen
+        #ensure player doesn't go off the edge of the tela
         if self.rect.left + dx < 0:
             dx = 0 -self.rect.left
 
-        if self.rect.right + dx > SCREEN_WIDTH:
-            dx =  SCREEN_WIDTH - self.rect.right
+        if self.rect.right + dx > tela_largura:
+            dx =  tela_largura - self.rect.right
 
         #check collision with platforms
         for platform in platform_group:
@@ -151,20 +151,20 @@ class Player():
                         dy = 0
                         self.vel_y = -20
 
-        #check if the player has bounced to the top of the screen
-        if self.rect.top <= scroll_thresh:
-            #if player is jumping
+        #check if the player has bounced to the top of the tela
+        if self.rect.top <= limite_rolagem:
+            #if player is pulo
             if self.vel_y < 0:
-                scroll = -dy
+                rolagem = -dy
 
         #update rectangule position
         self.rect.x += dx
-        self.rect.y += dy + scroll
+        self.rect.y += dy + rolagem
 
         #update mask
         self.mask = pygame.mask.from_surface(self.image)
 
-        return scroll
+        return rolagem
 
 #platform class
 class Platform(pygame.sprite.Sprite):
@@ -179,7 +179,7 @@ class Platform(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
     
-    def update(self, scroll):
+    def update(self, rolagem):
         #moving platform side to side if it is a moving platform
         if self.moving == True:
             self.move_counter += 1
@@ -189,26 +189,26 @@ class Platform(pygame.sprite.Sprite):
                 self.rect.x += self.direction
 
         # change platform direction if it has moved fully or hit a wall
-        if self.move_counter >= 100 or self.rect.left < 0 or self.rect.right > SCREEN_WIDTH:
+        if self.move_counter >= 100 or self.rect.left < 0 or self.rect.right > tela_largura:
             self.direction *= -1
             self.move_counter = 0
 
         #update platform's vertical position
-        self.rect.y += scroll
+        self.rect.y += rolagem
 
-        #check if platform's has gone off the screen
-        if self.rect.top > SCREEN_HEIGHT:
+        #check if platform's has gone off the tela
+        if self.rect.top > tela_altura:
             self.kill()
 
 #player instance
-lory = Player(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 75)
+lory = Player(tela_largura // 2, tela_altura - 75)
 
 #create sprite groups
 platform_group = pygame.sprite.Group()
 enemy_group = pygame.sprite.Group()
 
 #create starting platforms
-platform = Platform(SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT - 50, 100, False)
+platform = Platform(tela_largura // 2 - 50, tela_altura - 50, 100, False)
 platform_group.add(platform)
 
 #game loop
@@ -216,25 +216,25 @@ run = True
 while run: 
 
     #slow down 
-    clock.tick(FPS)
+    relogio.tick(FPS)
 
     if game_over == False:
         #move player
-        scroll = lory.move()
+        rolagem = lory.move()
 
         #draw background
-        bg_scroll += scroll
-        bg_scroll_title += scroll
-        if bg_scroll >= 600:
-            bg_scroll = 0
-        draw_bg(bg_scroll)
-        draw_title_bg(bg_scroll_title)
+        fundo_rolagem += rolagem
+        fundo_rolagem_titulo += rolagem
+        if fundo_rolagem >= 600:
+            fundo_rolagem = 0
+        draw_bg(fundo_rolagem)
+        draw_title_bg(fundo_rolagem_titulo)
 
 
         #generate platforms
-        if len(platform_group) < max_platforms:
+        if len(platform_group) < plataformas_maximo:
             p_w = random.randint(40, 60)
-            p_x = random.randint(0, SCREEN_WIDTH - p_w)
+            p_x = random.randint(0, tela_largura - p_w)
             p_y = platform.rect.y - random.randint(80, 120)
             p_type = random.randint(1, 2)
             if p_type == 1 and score > 1500:
@@ -245,51 +245,51 @@ while run:
             platform_group.add(platform)
 
         #update platforms
-        platform_group.update(scroll)
+        platform_group.update(rolagem)
 
 
         #generate enemies
         if len(enemy_group) == 0 and score > 1500:
-            enemy = Enemy(SCREEN_WIDTH, 30, bat_sheet, 1.5)
+            enemy = Enemy(tela_largura, 30, bat_sheet, 1.5)
             enemy_group.add(enemy )
 
         #update enemies
-        enemy_group.update(scroll, SCREEN_WIDTH)
+        enemy_group.update(rolagem, tela_largura)
 
         #update score
-        if scroll > 0:
-            score += scroll
+        if rolagem > 0:
+            score += rolagem
 
         #draw line at previous high score
-        pygame.draw.line(screen, WHITE, (0, score - high_score + scroll_thresh), (SCREEN_WIDTH, score - high_score + scroll_thresh), 3)
-        draw_test('HIGH SCORE', font_small, WHITE, SCREEN_WIDTH - 130, score - high_score + scroll_thresh)
+        pygame.draw.line(tela, WHITE, (0, score - high_score + limite_rolagem), (tela_largura, score - high_score + limite_rolagem), 3)
+        draw_test('HIGH SCORE', font_small, WHITE, tela_largura - 130, score - high_score + limite_rolagem)
 
         #draw sprites
-        platform_group.draw(screen)
-        enemy_group.draw(screen)
+        platform_group.draw(tela)
+        enemy_group.draw(tela)
         lory.draw()
 
-        if jumping == False:
+        if pulo == False:
             draw_test('PRESSIONE ESPAÇO', font_small, WHITE, 100, 360)
             draw_test('PARA COMEÇAR O JOGO', font_small, WHITE, 80, 390)
-            screen.blit(title_image, (75, 20))
+            tela.blit(title_image, (75, 20))
         else:
              #draw panel
             draw_panel()
 
         #check game over
-        if lory.rect.top > SCREEN_HEIGHT:
+        if lory.rect.top > tela_altura:
             game_over = True
         #check for collision with enemies
         if pygame.sprite.spritecollide(lory, enemy_group, False):
             if pygame.sprite.spritecollide(lory, enemy_group, False, pygame.sprite.collide_mask):
                 game_over = True
     else:
-        if fade_counter < SCREEN_WIDTH:
-            fade_counter += 5
+        if contador_fade < tela_largura:
+            contador_fade += 5
             for y in range(0, 6, 2):
-                pygame.draw.rect(screen, BLUE2, (0, y * 100, fade_counter, 100))
-                pygame.draw.rect(screen, BLUE2, (SCREEN_WIDTH - fade_counter, (y + 1) * 100, SCREEN_WIDTH, 100))
+                pygame.draw.rect(tela, BLUE2, (0, y * 100, contador_fade, 100))
+                pygame.draw.rect(tela, BLUE2, (tela_largura - contador_fade, (y + 1) * 100, tela_largura, 100))
         else:  
             draw_test('GAME OVER!', font_big, WHITE, 130, 200)
             draw_test('PONTOS: ' + str(score), font_big, WHITE, 120, 250)
@@ -305,26 +305,26 @@ while run:
                 #reset variables
                 game_over = False
                 score = 0
-                scroll = 0
-                fade_counter = 0
-                jumping = False
-                bg_scroll_title = 0
+                rolagem = 0
+                contador_fade = 0
+                pulo = False
+                fundo_rolagem_titulo = 0
                 #reposition loryh
-                lory.rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT - 75)
+                lory.rect.center = (tela_largura // 2, tela_altura - 75)
                 #reset enemies
                 enemy_group.empty()
                 #reset platforms
                 platform_group.empty()
                 #create starting platforms
-                platform = Platform(SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT - 50, 100, False)
+                platform = Platform(tela_largura // 2 - 50, tela_altura - 50, 100, False)
                 platform_group.add(platform)
 
 
     #event handler
     for e in pygame.event.get():
         if e.type == pygame.KEYDOWN:
-            if e.key == pygame.K_SPACE and jumping == False:
-                jumping = True
+            if e.key == pygame.K_SPACE and pulo == False:
+                pulo = True
         if e.type == pygame.QUIT:
             #update high score
             if score > high_score:

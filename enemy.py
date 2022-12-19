@@ -2,7 +2,7 @@ import pygame
 import random
 
 class Enemy(pygame.sprite.Sprite): 
-    def __init__(self, SCREEN_WIDTH, y, sprite_sheet, scale):
+    def __init__(self, tela_largura, y, sprite_sheet, scale):
         pygame.sprite.Sprite.__init__(self)
 
         #define variables
@@ -31,11 +31,11 @@ class Enemy(pygame.sprite.Sprite):
         if self.direction ==  1: #if starter in right, go to left
             self.rect.x = 0
         else:
-            self.rect.x = SCREEN_WIDTH
+            self.rect.x = tela_largura
 
         self.rect.y = y
     
-    def update(self, scroll,SCREEN_WIDTH):
+    def update(self, rolagem,tela_largura):
         #update animation
         ANIMATION_COOLDOWN = 100
         #update image depending on current frame
@@ -50,8 +50,8 @@ class Enemy(pygame.sprite.Sprite):
 
         #move enemy
         self.rect.x += self.direction * 2
-        self.rect.y += scroll
+        self.rect.y += rolagem
 
-        #check if gone off screen
-        if self.rect.right < 0 or self.rect.left > SCREEN_WIDTH:
+        #check if gone off tela
+        if self.rect.right < 0 or self.rect.left > tela_largura:
             self.kill()
