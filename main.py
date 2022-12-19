@@ -32,8 +32,8 @@ plataformas_maximo = 10
 rolagem = 0
 fundo_rolagem = 0
 fundo_rolagem_titulo = 0
-game_over = False
-score = 0
+fim_jogo = False
+pontos = 0
 contador_fade = 0
 pulo = False
 
@@ -44,74 +44,70 @@ else:
     high_score = 0
 
 #colors
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-MARROON = ((115,0,0))
-BROWN = (124, 80, 66)
-BROWN2 = (169, 110, 93)
-BLUE = (115, 221, 228)
-BLUE2 = (81, 183, 226)
-PANEL = (220, 220, 220)
+BRANCO = (255, 255, 255)
+PRETO = (0, 0, 0)
+AZUL = (81, 183, 226)
 
 #define font
-font_small = pygame.font.SysFont('Lucida Sans', 20)
+fonte_pequena = pygame.font.SysFont('Lucida Sans', 20)
 font_big = pygame.font.SysFont('Lucida Sans', 24)
 
 #load images
-lory_image = pygame.image.load('assets/lory.png').convert_alpha()
-bg_image2 = pygame.image.load('assets/BG2.png').convert_alpha()
-bg_image1 = pygame.image.load('assets/BG1.png').convert_alpha()
-platform_image = pygame.image.load('assets/platform1.png').convert_alpha()
-title_image = pygame.image.load('assets/Titulo.png')
-#bat spritesheet
-bat_sheet_img = pygame.image.load('assets/Jonnie-Spritesheet.png').convert_alpha()
-bat_sheet = SpriteSheet(bat_sheet_img)
+imagem_lory = pygame.image.load('assets/lory.png').convert_alpha()
+imagem_montanha_subir = pygame.image.load('assets/BG2.png').convert_alpha()
+imagem_montanha = pygame.image.load('assets/BG1.png').convert_alpha()
+imagem_plataforma = pygame.image.load('assets/platform1.png').convert_alpha()
+imagem_titulo = pygame.image.load('assets/Titulo.png')
+
+#jonnie spritesheet
+jonnie_sheet_imagem = pygame.image.load('assets/Jonnie-Spritesheet.png').convert_alpha()
+jonnie_sheet = SpriteSheet(jonnie_sheet_imagem)
 
 #function for outputting text onto the tela
-def draw_test(text, font, text_col, x, y):
-    img = font.render(text, True, text_col)
-    tela.blit(img, (x, y))
+def escrever_texto(text, font, text_col, x, y):
+    imagem = font.render(text, True, text_col)
+    tela.blit(imagem, (x, y))
 
-def draw_panel():
+def desenhar_painel_pontos():
     # Create a surface for the panel
-    panel_surface = pygame.Surface((tela_largura, 30))
-    panel_surface.fill(BLACK)
+    superficie_painel = pygame.Surface((tela_largura, 30))
+    superficie_painel.fill(PRETO)
 
     # Set the alpha value of the panel surface
     alpha = 128  # Set the alpha value to 128 (out of 255)
-    panel_surface.set_alpha(alpha)
+    superficie_painel.set_alpha(alpha)
 
     # Draw the panel surface on the tela
-    tela.blit(panel_surface, (0, 0))
+    tela.blit(superficie_painel, (0, 0))
 
     # Draw the line on the tela
-    pygame.draw.line(tela, WHITE, (0, 30), (tela_largura, 30), 2)
-    draw_test('PONTOS: ' + str(score), font_small, WHITE, 10, 0)
+    pygame.draw.line(tela, BRANCO, (0, 30), (tela_largura, 30), 2)
+    escrever_texto('PONTOS: ' + str(pontos), fonte_pequena, BRANCO, 10, 0)
 
 def draw_title_bg(fundo_rolagem_titulo):
-    tela.blit(bg_image1, (0, 195 + fundo_rolagem_titulo))
+    tela.blit(imagem_montanha, (0, 195 + fundo_rolagem_titulo))
 
 #function for drawing the background
-def draw_bg(fundo_rolagem):
-    tela.blit(bg_image2, (0, 0 + fundo_rolagem))
-    tela.blit(bg_image2, (0, -600 + fundo_rolagem))
+def desenhar_fundo(fundo_rolagem):
+    tela.blit(imagem_montanha_subir, (0, 0 + fundo_rolagem))
+    tela.blit(imagem_montanha_subir, (0, -600 + fundo_rolagem))
 
-#class player
-class Player():
-    def __init__(self, x, y): # x and y are init cordenates of player
-        self.image = pygame.transform.scale(lory_image, (35, 45)) #add image in the player and resize
+#class Jogador
+class Jogador():
+    def __init__(self, x, y): # x and y are init cordenates of Jogador
+        self.image = pygame.transform.scale(imagem_lory, (35, 45)) #add image in the Jogador and resize
         self.width = 25 # width of rect
         self.height = 40 # height of rect
-        self.rect = pygame.Rect(0, 0, self.width, self.height) #create a rect around of the player     
+        self.rect = pygame.Rect(0, 0, self.width, self.height) #create a rect around of the Jogador     
         self.rect.center = (x, y) # posicion the rect
         self.vel_y = 0
         self.flip = False #start fliped to right 
 
-    def draw(self):
+    def desenhar(self):
         tela.blit(pygame.transform.flip(self.image, self.flip, False), (self.rect.x - 10, self.rect.y - 5)) #move some pixels to adjust the rect
-        # pygame.draw.rect(tela, WHITE, self.rect, 2)
+        # pygame.draw.rect(tela, BRANCO, self.rect, 2)
 
-    def move(self):
+    def mover(self):
         #reset variables
         rolagem = 0
         dx = 0
@@ -142,7 +138,7 @@ class Player():
         
 
 
-        #ensure player doesn't go off the edge of the tela
+        #ensure Jogador doesn't go off the edge of the tela
         if self.rect.left + dx < 0:
             dx = 0 -self.rect.left
 
@@ -150,20 +146,20 @@ class Player():
             dx =  tela_largura - self.rect.right
 
         #check collision with platforms
-        for platform in platform_group:
+        for plataforma in grupo_plataforma:
             #collision in the y direction
-            if platform.rect.colliderect(self.rect.x, self.rect.y + dy, self.width, self.height):
+            if plataforma.rect.colliderect(self.rect.x, self.rect.y + dy, self.width, self.height):
                 #check if above the platform
-                if self.rect.bottom < platform.rect.centery:
+                if self.rect.bottom < plataforma.rect.centery:
                     if self.vel_y > 0:
-                        self.rect.bottom = platform.rect.top
+                        self.rect.bottom = plataforma.rect.top
                         dy = 0
                         self.vel_y = -20
                         som_pulo.play()
 
-        #check if the player has bounced to the top of the tela
+        #check if the Jogador has bounced to the top of the tela
         if self.rect.top <= limite_rolagem:
-            #if player is pulo
+            #if Jogador is pulo
             if self.vel_y < 0:
                 rolagem = -dy
 
@@ -177,10 +173,10 @@ class Player():
         return rolagem
 
 #platform class
-class Platform(pygame.sprite.Sprite):
+class Plataforma(pygame.sprite.Sprite):
     def __init__(self, x, y, width, moving):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.transform.scale(platform_image, (width, 40))
+        self.image = pygame.transform.scale(imagem_plataforma, (width, 40))
         self.moving = moving
         self.move_counter = random.randint(0, 50)
         self.direction = random.choice([-1, 1])
@@ -193,7 +189,7 @@ class Platform(pygame.sprite.Sprite):
         #moving platform side to side if it is a moving platform
         if self.moving == True:
             self.move_counter += 1
-            if score >= 3000:
+            if pontos >= 3000:
                 self.rect.x += self.direction * self.speed
             else:
                 self.rect.x += self.direction
@@ -210,16 +206,16 @@ class Platform(pygame.sprite.Sprite):
         if self.rect.top > tela_altura:
             self.kill()
 
-#player instance
-lory = Player(tela_largura // 2, tela_altura - 75)
+#Jogador instance
+lory = Jogador(tela_largura // 2, tela_altura - 75)
 
 #create sprite groups
-platform_group = pygame.sprite.Group()
-enemy_group = pygame.sprite.Group()
+grupo_plataforma = pygame.sprite.Group()
+grupo_inimigos = pygame.sprite.Group()
 
 #create starting platforms
-platform = Platform(tela_largura // 2 - 50, tela_altura - 50, 100, False)
-platform_group.add(platform)
+plataforma = Plataforma(tela_largura // 2 - 50, tela_altura - 50, 100, False)
+grupo_plataforma.add(plataforma)
 
 #game loop
 run = True
@@ -229,94 +225,93 @@ while run:
     #slow down 
     relogio.tick(FPS)
 
-    if game_over == False:
-        #move player
-        rolagem = lory.move()
+    if fim_jogo == False:
+        #move Jogador
+        rolagem = lory.mover()
 
         #draw background
         fundo_rolagem += rolagem
         fundo_rolagem_titulo += rolagem
         if fundo_rolagem >= 600:
             fundo_rolagem = 0
-        draw_bg(fundo_rolagem)
+        desenhar_fundo(fundo_rolagem)
         draw_title_bg(fundo_rolagem_titulo)
 
 
         #generate platforms
-        if len(platform_group) < plataformas_maximo:
+        if len(grupo_plataforma) < plataformas_maximo:
             p_w = random.randint(40, 60)
             p_x = random.randint(0, tela_largura - p_w)
-            p_y = platform.rect.y - random.randint(80, 120)
+            p_y = plataforma.rect.y - random.randint(80, 120)
             p_type = random.randint(1, 2)
-            if p_type == 1 and score > 1500:
+            if p_type == 1 and pontos > 1500:
                 p_moving = True
             else:
                 p_moving = False
-            platform = Platform(p_x, p_y, p_w, p_moving)
-            platform_group.add(platform)
+            plataforma = Plataforma(p_x, p_y, p_w, p_moving)
+            grupo_plataforma.add(plataforma)
 
         #update platforms
-        platform_group.update(rolagem)
+        grupo_plataforma.update(rolagem)
 
 
         #generate enemies
-        if len(enemy_group) == 0 and score > 1500:
-            enemy = Enemy(tela_largura, 30, bat_sheet, 1.5)
-            enemy_group.add(enemy )
+        if len(grupo_inimigos) == 0 and pontos > 1500:
+            enemy = Enemy(tela_largura, 30, jonnie_sheet, 1.5)
+            grupo_inimigos.add(enemy )
 
         #update enemies
-        enemy_group.update(rolagem, tela_largura)
+        grupo_inimigos.update(rolagem, tela_largura)
 
         #update score
         if rolagem > 0:
-            score += rolagem
+            pontos += rolagem
 
         #draw line at previous high score
-        pygame.draw.line(tela, WHITE, (0, score - high_score + limite_rolagem), (tela_largura, score - high_score + limite_rolagem), 3)
-        draw_test('HIGH SCORE', font_small, WHITE, tela_largura - 130, score - high_score + limite_rolagem)
+        pygame.draw.line(tela, BRANCO, (0, pontos - high_score + limite_rolagem), (tela_largura, pontos - high_score + limite_rolagem), 3)
+        escrever_texto('HIGH SCORE', fonte_pequena, BRANCO, tela_largura - 130, pontos - high_score + limite_rolagem)
 
         #draw sprites
-        platform_group.draw(tela)
-        enemy_group.draw(tela)
-        lory.draw()
+        grupo_plataforma.draw(tela)
+        grupo_inimigos.draw(tela)
+        lory.desenhar()
 
         if pulo == False:
-            draw_test('PRESSIONE ESPAÇO', font_small, WHITE, 100, 360)
-            draw_test('PARA COMEÇAR O JOGO', font_small, WHITE, 80, 390)
-            tela.blit(title_image, (75, 20))
+            escrever_texto('PRESSIONE ESPAÇO', fonte_pequena, BRANCO, 100, 360)
+            escrever_texto('PARA COMEÇAR O JOGO', fonte_pequena, BRANCO, 80, 390)
+            tela.blit(imagem_titulo, (75, 20))
         else:
              #draw panel
-            draw_panel()
-            
+            desenhar_painel_pontos()
+
         #check game over
         if lory.rect.top > tela_altura:
-            game_over = True
-
+            fim_jogo = True
         #check for collision with enemies
-        if pygame.sprite.spritecollide(lory, enemy_group, False):
-            if pygame.sprite.spritecollide(lory, enemy_group, False, pygame.sprite.collide_mask):
-                game_over = True
+        if pygame.sprite.spritecollide(lory, grupo_inimigos, False):
+            if pygame.sprite.spritecollide(lory, grupo_inimigos, False, pygame.sprite.collide_mask):
+                fim_jogo = True
     else:
         if contador_fade < tela_largura:
             contador_fade += 5
             for y in range(0, 6, 2):
-                pygame.draw.rect(tela, BLUE2, (0, y * 100, contador_fade, 100))
-                pygame.draw.rect(tela, BLUE2, (tela_largura - contador_fade, (y + 1) * 100, tela_largura, 100))
+                pygame.draw.rect(tela, AZUL, (0, y * 100, contador_fade, 100))
+                pygame.draw.rect(tela, AZUL, (tela_largura - contador_fade, (y + 1) * 100, tela_largura, 100))
         else:  
-            draw_test('GAME OVER!', font_big, WHITE, 130, 200)
-            draw_test('PONTOS: ' + str(score), font_big, WHITE, 120, 250)
-            draw_test('APERTE ESPAÇO PARA', font_small, WHITE, 90, 500)
-            draw_test('VOLTAR AO MENU', font_small, WHITE, 110, 530)
+            escrever_texto('GAME OVER!', font_big, BRANCO, 130, 200)
+            escrever_texto('PONTOS: ' + str(pontos), font_big, BRANCO, 120, 250)
+            escrever_texto('APERTE ESPAÇO PARA', fonte_pequena, BRANCO, 90, 500)
+            escrever_texto('VOLTAR AO MENU', fonte_pequena, BRANCO, 110, 530)
             #update high score
-            if score > high_score:
-                high_score = score
+            if pontos > high_score:
+                high_score = pontos
                 with open('score.txt', 'w') as file:
                     file.write(str(high_score))
             key = pygame.key.get_pressed()
             if key[pygame.K_SPACE]:
                 #reset variables
-                game_over = False
-                score = 0
+                fim_jogo = False
+                pontos = 0
                 rolagem = 0
                 contador_fade = 0
                 pulo = False
@@ -324,12 +319,12 @@ while run:
                 #reposition loryh
                 lory.rect.center = (tela_largura // 2, tela_altura - 75)
                 #reset enemies
-                enemy_group.empty()
+                grupo_inimigos.empty()
                 #reset platforms
-                platform_group.empty()
+                grupo_plataforma.empty()
                 #create starting platforms
-                platform = Platform(tela_largura // 2 - 50, tela_altura - 50, 100, False)
-                platform_group.add(platform)
+                plataforma = Plataforma(tela_largura // 2 - 50, tela_altura - 50, 100, False)
+                grupo_plataforma.add(plataforma)
 
 
     #event handler
@@ -341,11 +336,11 @@ while run:
                 musica_jogo.play(-1)
         if e.type == pygame.QUIT:
             #update high score
-            if score > high_score:
-                high_score = score
+            if pontos > high_score:
+                high_score = pontos
                 with open('score.txt', 'w') as file:
                     file.write(str(high_score))
-            run = False
+            iniciar_jogo = False
 
 
     #update display pygame
