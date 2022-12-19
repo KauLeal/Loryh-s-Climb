@@ -287,10 +287,12 @@ while run:
         #check game over
         if lory.rect.top > tela_altura:
             fim_jogo = True
+            musica_jogo.stop()
         #check for collision with enemies
         if pygame.sprite.spritecollide(lory, grupo_inimigos, False):
             if pygame.sprite.spritecollide(lory, grupo_inimigos, False, pygame.sprite.collide_mask):
                 fim_jogo = True
+                musica_jogo.stop()
     else:
         if contador_fade < tela_largura:
             contador_fade += 5
@@ -316,6 +318,7 @@ while run:
                 contador_fade = 0
                 pulo = False
                 fundo_rolagem_titulo = 0
+                musica_menu.play()
                 #reposition loryh
                 lory.rect.center = (tela_largura // 2, tela_altura - 75)
                 #reset enemies
