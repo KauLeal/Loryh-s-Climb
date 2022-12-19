@@ -63,15 +63,21 @@ def draw_test(text, font, text_col, x, y):
     img = font.render(text, True, text_col)
     screen.blit(img, (x, y))
 
-#function for drawing info panel
 def draw_panel():
-    # pygame.draw.rect(screen, PANEL, (0, 0, SCREEN_WIDTH, 30))
-    # pygame.draw.line(screen, WHITE, (0, 30), (SCREEN_WIDTH, 30), 2)
-    draw_test('PONTOS: ' + str(score), font_small, WHITE, 100, 0)
+    # Create a surface for the panel
+    panel_surface = pygame.Surface((SCREEN_WIDTH, 30))
+    panel_surface.fill(BLACK)
 
+    # Set the alpha value of the panel surface
+    alpha = 128  # Set the alpha value to 128 (out of 255)
+    panel_surface.set_alpha(alpha)
 
+    # Draw the panel surface on the screen
+    screen.blit(panel_surface, (0, 0))
 
-
+    # Draw the line on the screen
+    pygame.draw.line(screen, WHITE, (0, 30), (SCREEN_WIDTH, 30), 2)
+    draw_test('PONTOS: ' + str(score), font_small, WHITE, 10, 0)
 
 def draw_title_bg(bg_scroll_title):
     screen.blit(bg_image1, (0, 195 + bg_scroll_title))
@@ -282,8 +288,8 @@ while run:
         if fade_counter < SCREEN_WIDTH:
             fade_counter += 5
             for y in range(0, 6, 2):
-                pygame.draw.rect(screen, BROWN, (0, y * 100, fade_counter, 100))
-                pygame.draw.rect(screen, BROWN, (SCREEN_WIDTH - fade_counter, (y + 1) * 100, SCREEN_WIDTH, 100))
+                pygame.draw.rect(screen, BLUE2, (0, y * 100, fade_counter, 100))
+                pygame.draw.rect(screen, BLUE2, (SCREEN_WIDTH - fade_counter, (y + 1) * 100, SCREEN_WIDTH, 100))
         else:  
             draw_test('GAME OVER!', font_big, WHITE, 130, 200)
             draw_test('PONTOS: ' + str(score), font_big, WHITE, 120, 250)
