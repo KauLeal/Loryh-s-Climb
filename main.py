@@ -130,6 +130,7 @@ class Jogador():
                 dx = 10
                 self.flip = False
             if key[pygame.K_SPACE]:
+                som_pulo.stop()
                 self.vel_y = 10
         
             #gravidade    
@@ -325,7 +326,7 @@ while iniciar_jogo:
                 #create starting platforms
                 plataforma = Plataforma(tela_largura // 2 - 50, tela_altura - 50, 100, False)
                 grupo_plataforma.add(plataforma)
-
+ 
 
     #event handler
     for e in pygame.event.get():
