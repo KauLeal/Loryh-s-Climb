@@ -209,7 +209,7 @@ class Plataforma(pygame.sprite.Sprite):
             self.kill()
 
 #Jogador instance
-lory = Jogador(tela_largura // 2, tela_altura - 75)
+lory = Jogador(tela_largura // 2, tela_altura - 68)
 
 #create sprite groups
 grupo_plataforma = pygame.sprite.Group()
@@ -324,7 +324,7 @@ while iniciar_jogo:
                 fundo_rolagem_titulo = 0
                 musica_menu.play()
                 #reposition loryh
-                lory.rect.center = (tela_largura // 2, tela_altura - 75)
+                lory.rect.center = (tela_largura // 2, tela_altura - 67)
                 #reset enemies
                 grupo_inimigos.empty()
                 #reset platforms
