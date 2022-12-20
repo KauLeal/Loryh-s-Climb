@@ -6,7 +6,7 @@
 ![Bitbucket open issues](https://img.shields.io/bitbucket/issues/gabomoreira/Loryh-s-Climb?style=for-the-badge)
 ![Bitbucket open pull requests](https://img.shields.io/bitbucket/pr-raw/gabomoreira/Loryh-s-Climb?style=for-the-badge)
 
-> O jogo consiste em chegar ao topo da montanha pulando de plataforma a plataforma, porém para alcançar esse objetivo o jogador terá que evitar vários obstaculos pelo caminho que tentarão impedi-lo.
+> O jogo foi baseado na historia de uma garota, chamada loryh que tinha um sonho, esse sonho era o de se tranformar na melhor bruxa de todos os tempos, porém para ela poder alcançar esse objetivo, teria que passar por um grande desafio, esse desadio seria o de alcançar o topo da montanha, e através do percurso terá que evitar obstáculos que tentarão derrubá-la e consequentemente impedir a realização de seu sonho, contudo o que ninguém sabia era que a montanha era enfeitiçada, quanto mais ela subia, mais longe o topo da montanha ficava.
 
 ## 💻 Tecnologias
 
