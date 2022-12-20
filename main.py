@@ -322,7 +322,7 @@ while iniciar_jogo:
                 contador_fade = 0
                 pulo = False
                 fundo_rolagem_titulo = 0
-                musica_menu.play()
+                musica_menu.play(-1)
                 #reposition loryh
                 lory.rect.center = (tela_largura // 2, tela_altura - 67)
                 #reset enemies
