@@ -1,10 +1,10 @@
 # Loryh-s-Climb
 
-![GitHub repo size](https://img.shields.io/github/repo-size/gabomoreira/Loryh-s-Climb?style=for-the-badge)
-![GitHub language count](https://img.shields.io/github/languages/count/gabomoreira/Loryh-s-Climb?style=for-the-badge)
-![GitHub forks](https://img.shields.io/github/forks/gabomoreira/Loryh-s-Climb?style=for-the-badge)
-![Bitbucket open issues](https://img.shields.io/bitbucket/issues/gabomoreira/Loryh-s-Climb?style=for-the-badge)
-![Bitbucket open pull requests](https://img.shields.io/bitbucket/pr-raw/gabomoreira/Loryh-s-Climb?style=for-the-badge)
+![GitHub repo size](https://img.shields.io/github/repo-size/KauLeal/Loryh-s-Climb?style=for-the-badge)
+![GitHub language count](https://img.shields.io/github/languages/count/KauLeal/Loryh-s-Climb?style=for-the-badge)
+![GitHub forks](https://img.shields.io/github/forks/KauLeal/Loryh-s-Climb?style=for-the-badge)
+![Bitbucket open issues](https://img.shields.io/bitbucket/issues/KauLeal/Loryh-s-Climb?style=for-the-badge)
+![Bitbucket open pull requests](https://img.shields.io/bitbucket/pr-raw/KauLeal/Loryh-s-Climb?style=for-the-badge)
 
 > O jogo foi baseado na historia de uma garota, chamada loryh que tinha um sonho, esse sonho era o de se tranformar na melhor bruxa de todos os tempos, porém para ela poder alcançar esse objetivo, teria que passar por um grande desafio, esse desadio seria o de alcançar o topo da montanha, e através do percurso terá que evitar obstáculos que tentarão derrubá-la e consequentemente impedir a realização de seu sonho, contudo o que ninguém sabia era que a montanha era enfeitiçada, quanto mais ela subia, mais longe o topo da montanha ficava.
 
