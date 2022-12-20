@@ -13,7 +13,9 @@
 As tecnologias utilizadas para construir o Loryh-s-Climb foram:
 
 - Python
-- Pygame
+- pygame
+- random
+- os
 
 ## 🤝 Colaborador
 
