@@ -85,7 +85,7 @@ def desenhar_painel_pontos():
     pygame.draw.line(tela, BRANCO, (0, 30), (tela_largura, 30), 2)
     escrever_texto('PONTOS: ' + str(pontos), fonte_pequena, BRANCO, 10, 0)
 
-def draw_title_bg(fundo_rolagem_titulo):
+def desenhar_montanha(fundo_rolagem_titulo):
     tela.blit(imagem_montanha, (0, 195 + fundo_rolagem_titulo))
 
 #function for drawing the background
@@ -237,7 +237,7 @@ while iniciar_jogo:
         if fundo_rolagem >= 600:
             fundo_rolagem = 0
         desenhar_fundo(fundo_rolagem)
-        draw_title_bg(fundo_rolagem_titulo)
+        desenhar_montanha(fundo_rolagem_titulo)
 
 
         #generate platforms
