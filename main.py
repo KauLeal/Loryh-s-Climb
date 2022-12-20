@@ -14,11 +14,11 @@ tela_altura = 600
 tela = pygame.display.set_mode((tela_largura, tela_altura))
 pygame.display.set_caption("Loryh's Climb")
 
-#define s taxa de frames
+#define a taxa de frames
 relogio = pygame.time.Clock()
 FPS = 60
 
-#carrega a música e sons
+#carrega música e sons
 musica_menu = pygame.mixer.Sound('som/SDTK1.mp3')
 musica_menu.set_volume(0.4)
 musica_jogo = pygame.mixer.Sound('som/SDTK2.mp3')
@@ -70,7 +70,7 @@ def escrever_texto(text, font, text_col, x, y):
     tela.blit(imagem, (x, y))
 
 def desenhar_painel_pontos():
-    # Criação duma superfície para o painel
+    # Criação de uma superfície para o painel
     superficie_painel = pygame.Surface((tela_largura, 30))
     superficie_painel.fill(PRETO)
 
@@ -93,10 +93,10 @@ def desenhar_fundo(fundo_rolagem):
     tela.blit(imagem_montanha_subir, (0, 0 + fundo_rolagem))
     tela.blit(imagem_montanha_subir, (0, -600 + fundo_rolagem))
 
-#class Jogador
+#classe Jogador
 class Jogador():
     def __init__(self, x, y): # x e y são coordenadas iniciais do Jogador
-        self.image = pygame.transform.scale(imagem_lory, (35, 45)) #adiciona imagem no Jogador e redimensiona
+        self.image = pygame.transform.scale(imagem_lory, (35, 45)) #adiciona imagem no Jogador e redimenciona
         self.width = 25 # largura do rantângulo
         self.height = 40 # altura do rantângulo
         self.rect = pygame.Rect(0, 0, self.width, self.height) #cria um retângulo ao redor do Jogador    
@@ -150,7 +150,7 @@ class Jogador():
         for plataforma in grupo_plataforma:
             #colisão na direção y
             if plataforma.rect.colliderect(self.rect.x, self.rect.y + dy, self.width, self.height):
-                #check if above the platform
+                #checar se está acima da plataforma
                 if self.rect.bottom < plataforma.rect.centery:
                     if self.vel_y > 0:
                         self.rect.bottom = plataforma.rect.top
@@ -160,7 +160,7 @@ class Jogador():
 
         #verifica se o Jogador saltou para o topo da tela
         if self.rect.top <= limite_rolagem:
-            #if Jogador is pulo
+            #caso o jogador esteja pulando
             if self.vel_y < 0:
                 rolagem = -dy
 
@@ -173,7 +173,7 @@ class Jogador():
 
         return rolagem
 
-#class da plataforma
+#classe da plataforma
 class Plataforma(pygame.sprite.Sprite):
     def __init__(self, x, y, width, moving):
         pygame.sprite.Sprite.__init__(self)
@@ -207,7 +207,7 @@ class Plataforma(pygame.sprite.Sprite):
         if self.rect.top > tela_altura:
             self.kill()
 
-#Jogador instance
+#Instância de jogador
 lory = Jogador(tela_largura // 2, tela_altura - 68)
 
 #cria grupos de sprites
